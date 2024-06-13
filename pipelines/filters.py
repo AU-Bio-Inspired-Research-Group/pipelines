@@ -87,3 +87,16 @@ def replaceColour(input_image_path, output_image_path):
         img.save(output_image_path)
         print(f"Image saved to {output_image_path}")
 
+def flip_horizontal(inputFile, outputFile):
+    try:
+        with Image.open(inputFile) as img:
+            # Flip the image horizontally
+            flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
+
+            # Save the flipped image to the output folder
+            flipped_img.save(outputFile)
+
+            print(f"Flipped {inputFile} horizontally and saved to {outputFile}.")
+    except Exception as e:
+        print(f"Error processing {inputFile}: {str(e)}")
+

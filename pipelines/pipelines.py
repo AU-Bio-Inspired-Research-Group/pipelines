@@ -37,7 +37,8 @@ def resize(x_dim, y_dim, folderA, folderB):
 def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
     filters = {
         "greyscale": greyscale,
-        "colour": replaceColour
+        "colour": replaceColour,
+        "flip": flip_horizontal
         # Add other filters here as needed
     }
 
@@ -175,20 +176,12 @@ if __name__ == "__main__":
     pipeline2_parser.add_argument("outputA")
     pipeline2_parser.add_argument("outputB")
 
-    # Pipeline 3
-    pipeline3_parser = subparsers.add_parser("pipeline3", help="Pipeline 3")
-    pipeline3_parser.add_argument("filter", choices=["greyscale", "colour"], help="Filter")
-    pipeline3_parser.add_argument("input_folderA", help="Input folder A")
-    pipeline3_parser.add_argument("input_folderB", help="Input folder B")
-    pipeline3_parser.add_argument("output_folderA", help="Output folder A")
-    pipeline3_parser.add_argument("output_folderB", help="Output folder B")
-
     graph_parser = subparsers.add_parser("graph", help="Graph")
     graph_parser.add_argument("method", help="json file")
     graph_parser.add_argument("json", help="json file")
 
     filter_parser = subparsers.add_parser("filter", help="Filter")
-    filter_parser.add_argument("filter", choices=["greyscale", "colour"], help="Filter")
+    filter_parser.add_argument("filter", choices=["greyscale", "colour", "flip"], help="Filter")
     filter_parser.add_argument("input_folderA", help="Input folder A")
     filter_parser.add_argument("input_folderB", help="Input folder B")
     filter_parser.add_argument("output_folderA", help="Output folder A")
