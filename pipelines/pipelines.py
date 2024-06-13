@@ -9,12 +9,17 @@ from graph import *
 from methods import *
 from filters import *
 from crop import *
+from ssim import skimageMethods
 from usefulData import *
 
 def pipeline_1(method, folderA, folderB, **kwargs):
-    iterateThroughImages(folderA, folderB, method, **kwargs)
-    updated_colourmap(method, "results.json")
-    analyze_results("results.json", method)
+    # Different because don't use openCV
+    if method == "SSIM" or method == "RMSE":
+        skimageMethods(method, folderA, folderB, **kwargs)
+    else:
+        iterateThroughImages(folderA, folderB, method, **kwargs)
+        updated_colourmap(method, "results.json")
+        analyze_results("results.json", method)
 
 def pipeline_2(filename, folderA, folderB, outputA, outputB):
     crop_image(filename, folderA, folderB, outputA, outputB)
@@ -70,7 +75,6 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
         "PSNR": psnr,
         "MAE": mae,
         "NCC": ncc,
-        "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
         "Histogram": histogram_intersection,
         "EMD": emd,
         "Absolute": abs_diff,
@@ -150,7 +154,7 @@ if __name__ == "__main__":
 
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
-    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya"], help="Method")
+    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "RMSE", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya"], help="Method")
     pipeline1_parser.add_argument("folderA")
     pipeline1_parser.add_argument("folderB")
 
