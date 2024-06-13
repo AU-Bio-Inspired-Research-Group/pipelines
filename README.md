@@ -63,7 +63,7 @@ This command applies a filter to images in two input folders and saves the resul
 
 ### Arguments
 - `filter`: Filter to apply to images.
-  - Choices: ["greyscale", "colour"]
+  - Choices: ["greyscale", "colour", "flip"]
 - `input_folderA`: Path to input folder A containing images.
 - `input_folderB`: Path to input folder B containing images.
 - `output_folderA`: Path to output folder A for saving filtered images.
