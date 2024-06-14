@@ -69,7 +69,7 @@ def updated_colourmap(method, results_file, bottomCoverage=0, topCoverage=0):
         image_comparisons_data = json.load(f)
 
     # Read door positions data
-    door_positions_data = pd.read_csv("doorA_positions.csv")
+    door_positions_data = pd.read_csv("C:\\Users\\jonat\\source\\repos\\doors\\doors\\doorA_positions.csv")
 
     # Extract the specified metric values or use direct values if method is None
     metric_values = {}
@@ -83,20 +83,21 @@ def updated_colourmap(method, results_file, bottomCoverage=0, topCoverage=0):
     metric_column = method if method else "metric"
     door_positions_data[metric_column] = door_positions_data["image"].map(metric_values)
 
-    # Filter the data based on the bottom and top coverage
+    # Determine the thresholds based on the bottom and top coverage
     if bottomCoverage > 0:
         bottom_threshold = door_positions_data[metric_column].quantile(bottomCoverage / 100)
     else:
         bottom_threshold = door_positions_data[metric_column].min()
-    
+
     if topCoverage > 0:
         top_threshold = door_positions_data[metric_column].quantile(1 - topCoverage / 100)
     else:
         top_threshold = door_positions_data[metric_column].max()
-    
+
+    # Filter the data based on the thresholds
     filtered_data = door_positions_data[
-        (door_positions_data[metric_column] > bottom_threshold) &
-        (door_positions_data[metric_column] < top_threshold)
+        (door_positions_data[metric_column] >= bottom_threshold) &
+        (door_positions_data[metric_column] <= top_threshold)
     ]
 
     # Print original min and max values

@@ -69,6 +69,7 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
 
 def graph(method, json, bottomcoverage, topcoverage):
     updated_colourmap(method, "results.json", bottomcoverage, topcoverage)
+    analyze_results("results.json", method)
 
 def iterateThroughImages(folderA, folderB, method, **kwargs):
     # Define comparison techniques
