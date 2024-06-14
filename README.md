@@ -1,6 +1,6 @@
 # Pipelines
 
-To use pipelines clone the repository and cd into pipelines. Use `python pipelines.py [METHOD]` eg `python pipelines.py pipeline1 MAE doorA doorB outA outB`
+To use pipelines, clone the repository and `cd` into the pipelines directory. Use `python pipelines.py [METHOD]` e.g., `python pipelines.py pipeline1 MAE doorA doorB outA outB`.
 
 ## Pipeline 1
 Command: `pipeline1`
@@ -33,6 +33,20 @@ This command executes Pipeline 2 operations.
 - `outputA`: Output folder A for saving results.
 - `outputB`: Output folder B for saving results.
 
+## Pipeline 3
+Command: `pipeline3`
+
+### Description
+This command applies a filter to images in two input folders and saves the results in two output folders.
+
+### Arguments
+- `filter`: Filter to apply to images.
+  - Choices: ["greyscale", "colour", "flip"]
+- `input_folderA`: Path to input folder A containing images.
+- `input_folderB`: Path to input folder B containing images.
+- `output_folderA`: Path to output folder A for saving filtered images.
+- `output_folderB`: Path to output folder B for saving filtered images.
+
 ## Resize Command
 Command: `resize`
 
@@ -54,19 +68,25 @@ This command generates graphs based on JSON data.
 ### Arguments
 - `method`: Method for graph generation.
 - `json`: Path to JSON file containing data for graph generation.
-- `bottomcoverage`: The bottom percentage removed (i.e. don't plot the bottom 20% of the data)
-- `topcoverage`: The top percentage removed
+- `bottomcoverage`: The bottom percentage removed (i.e., don't plot the bottom 20% of the data).
+- `topcoverage`: The top percentage removed.
 
-## Filter Command
-Command: `filter`
+## Ratio Command
+Command: `ratio`
 
 ### Description
-This command applies a filter to images in two input folders and saves the results in two output folders.
+This command finds and prints all pairs of numbers with the same ratio that are smaller than the given numbers.
 
 ### Arguments
-- `filter`: Filter to apply to images.
-  - Choices: ["greyscale", "colour", "flip"]
-- `input_folderA`: Path to input folder A containing images.
-- `input_folderB`: Path to input folder B containing images.
-- `output_folderA`: Path to output folder A for saving filtered images.
-- `output_folderB`: Path to output folder B for saving filtered images.
+- `num1`: The first number.
+- `num2`: The second number.
+
+## Average Command
+Command: `average`
+
+### Description
+This command calculates the average of all PNG images in a specified folder and saves the result.
+
+### Arguments
+- `inputFolder`: Path to the folder containing input images.
+- `outputFile`: Filename for the output averaged image.
