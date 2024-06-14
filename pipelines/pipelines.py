@@ -67,8 +67,8 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
                 except Exception as e:
                     print(f"Error processing {input_path}: {str(e)}")
 
-def graph(method, json):
-    updated_colourmap(method, "results.json")
+def graph(method, json, bottomcoverage, topcoverage):
+    updated_colourmap(method, "results.json", bottomcoverage, topcoverage)
 
 def iterateThroughImages(folderA, folderB, method, **kwargs):
     # Define comparison techniques
@@ -182,6 +182,8 @@ if __name__ == "__main__":
     graph_parser = subparsers.add_parser("graph", help="Graph")
     graph_parser.add_argument("method", help="json file")
     graph_parser.add_argument("json", help="json file")
+    graph_parser.add_argument("bottomcoverage", help="coverage", type=int)
+    graph_parser.add_argument("topcoverage", help="coverage", type=int)
 
     filter_parser = subparsers.add_parser("filter", help="Filter")
     filter_parser.add_argument("filter", choices=["greyscale", "colour", "flip"], help="Filter")
@@ -204,7 +206,7 @@ if __name__ == "__main__":
     elif args.pipeline == "pipeline3":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "graph":
-        graph(args.method, args.json)
+        graph(args.method, args.json, args.bottomcoverage,args.topcoverage)
     elif args.pipeline == "resize":
         if args.dimensions:
             if len(args.dimensions) == 2:

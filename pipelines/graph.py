@@ -63,7 +63,7 @@ def colourmap(method, results_file):
     plt.show()
 
 
-def updated_colourmap(method, results_file):
+def updated_colourmap(method, results_file, bottomCoverage=0, topCoverage=0):
     # Read image comparisons data
     with open(results_file, "r") as f:
         image_comparisons_data = json.load(f)
@@ -80,16 +80,32 @@ def updated_colourmap(method, results_file):
             metric_values[image_name] = metrics[method]
 
     # Merge metric values with door positions
-    door_positions_data[method if method else "metric"] = door_positions_data["image"].map(metric_values)
+    metric_column = method if method else "metric"
+    door_positions_data[metric_column] = door_positions_data["image"].map(metric_values)
+
+    # Filter the data based on the bottom and top coverage
+    if bottomCoverage > 0:
+        bottom_threshold = door_positions_data[metric_column].quantile(bottomCoverage / 100)
+    else:
+        bottom_threshold = door_positions_data[metric_column].min()
+    
+    if topCoverage > 0:
+        top_threshold = door_positions_data[metric_column].quantile(1 - topCoverage / 100)
+    else:
+        top_threshold = door_positions_data[metric_column].max()
+    
+    filtered_data = door_positions_data[
+        (door_positions_data[metric_column] > bottom_threshold) &
+        (door_positions_data[metric_column] < top_threshold)
+    ]
 
     # Print original min and max values
-    metric_column = method if method else "metric"
-    original_min_metric = door_positions_data[metric_column].min()
-    original_max_metric = door_positions_data[metric_column].max()
+    original_min_metric = filtered_data[metric_column].min()
+    original_max_metric = filtered_data[metric_column].max()
 
     # Plotting
     plt.figure(figsize=(8, 6))
-    plt.scatter(door_positions_data["x"], door_positions_data["y"], c=door_positions_data[metric_column], cmap='rainbow', norm=Normalize(vmin=original_min_metric, vmax=original_max_metric))
+    plt.scatter(filtered_data["x"], filtered_data["y"], c=filtered_data[metric_column], cmap='rainbow', norm=Normalize(vmin=original_min_metric, vmax=original_max_metric))
     plt.title(f'{metric_column}')
     plt.axis('off')  # Remove x and y axes
     plt.colorbar(label=metric_column)
