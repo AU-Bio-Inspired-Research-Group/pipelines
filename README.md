@@ -87,9 +87,6 @@ Command: `average`
 ### Description
 This command calculates the average of all PNG images in a specified folder and saves the result.
 
-![image](https://github.com/AU-Bio-Inspired-Research-Group/pipelines/assets/121823795/0c50329c-a0bb-40e9-af50-4254143a9818)
-
-
 ### Arguments
 - `inputFolder`: Path to the folder containing input images.
 - `outputFile`: Filename for the output averaged image.
