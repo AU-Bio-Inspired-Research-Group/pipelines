@@ -75,7 +75,7 @@ This command generates graphs based on JSON data.
 Command: `ratio`
 
 ### Description
-This command finds and prints all pairs of numbers with the same ratio that are smaller than the given numbers.
+This command finds and prints all pairs of numbers with the same ratio that are smaller than the given numbers. Used to find other suitable resolutions that could be used.
 
 ### Arguments
 - `num1`: The first number.
