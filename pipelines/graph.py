@@ -14,7 +14,7 @@ def colourmap(method, results_file):
         image_comparisons_data = json.load(f)
 
     # Read door positions data
-    door_positions_data = pd.read_csv("C:\\Users\\jonat\\source\\repos\\doors\\doors\\doorA_positions.csv")
+    door_positions_data = pd.read_csv("doorA_positions.csv")
 
     # Extract the specified metric values or use direct values if method is None
     metric_values = {}
@@ -69,7 +69,7 @@ def updated_colourmap(method, results_file, bottomCoverage=0, topCoverage=0):
         image_comparisons_data = json.load(f)
 
     # Read door positions data
-    door_positions_data = pd.read_csv("C:\\Users\\jonat\\source\\repos\\doors\\doors\\doorA_positions.csv")
+    door_positions_data = pd.read_csv("doorA_positions.csv")
 
     # Extract the specified metric values or use direct values if method is None
     metric_values = {}
