@@ -29,8 +29,8 @@ def resize(x_dim, y_dim, folderA, folderB):
     if x_dim is not None and y_dim is not None:
         if not (check_image_dimensions("resizedA", x_dim, y_dim) and check_image_dimensions("resizedB", x_dim, y_dim)):
             print("Resizing images to dimensions:", x_dim, y_dim)
-            block_average_png_to_json(folderA, "resizedA", x_dim, y_dim)
-            block_average_png_to_json(folderB, "resizedB", x_dim, y_dim)
+            block_average_png_to_json(folderA, "resizedA", y_dim, x_dim)
+            block_average_png_to_json(folderB, "resizedB", y_dim, x_dim)
         else:
             print("Resized images with matching dimensions already exist.")
 
@@ -70,6 +70,9 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
 def graph(method, json, bottomcoverage, topcoverage):
     updated_colourmap(method, "results.json", bottomcoverage, topcoverage)
     analyze_results("results.json", method)
+
+def average(inputFolder, outputFile):
+    average_images(inputFolder, outputFile)
 
 def find_ratio_pairs(num1, num2):
     # Calculate the original ratio
@@ -211,6 +214,10 @@ if __name__ == "__main__":
     filter_parser.add_argument("output_folderA", help="Output folder A")
     filter_parser.add_argument("output_folderB", help="Output folder B")
 
+    average_parser = subparsers.add_parser("average", help="Average")
+    average_parser.add_argument("inputFolder")
+    average_parser.add_argument("outputFile")
+
 
     args = parser.parse_args()
 
@@ -236,4 +243,6 @@ if __name__ == "__main__":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "ratio":
         find_ratio_pairs(args.num1, args.num2)
+    elif args.pipeline == "average":
+       average(args.inputFolder, args.outputFile)
 
