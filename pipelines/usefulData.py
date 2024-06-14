@@ -35,10 +35,8 @@ def analyze_results(results_file, method):
     print(f"Standard deviation of {method} values: {std_dev}")
     
     # Create a box plot
-    '''
     plt.figure(figsize=(10, 6))
     plt.boxplot(df[method], vert=False, patch_artist=True, boxprops=dict(facecolor='lightblue'))
     plt.title(f'Box Plot of {method} Values')
     plt.xlabel(method)
     plt.show()
-    '''

@@ -86,17 +86,20 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
     results = {}
 
     # Load existing results if available
-    results_file = "results.json"
-    if os.path.exists(results_file):
-        with open(results_file, "r") as f:
-            results = json.load(f)
+    try:
+        results_file = "results.json"
+        if os.path.exists(results_file):
+            with open(results_file, "r") as f:
+                results = json.load(f)
         
-        # Check if any image has data for the specified method
-        if any(method in image_results for image_results in results.values()):
-            user_input = input(f"Results for method '{method}' already exist. Do you want to continue processing? (yes/no): ").strip().lower()
-            if user_input != 'yes':
-                print("Skipping processing.")
-                return
+            # Check if any image has data for the specified method
+            if any(method in image_results for image_results in results.values()):
+                user_input = input(f"Results for method '{method}' already exist. Do you want to continue processing? (yes/no): ").strip().lower()
+                if user_input != 'yes':
+                    print("Skipping processing.")
+                    return
+    except json.JSONDecodeError:
+        print("Error loading existing results. Starting fresh.")
 
     for filename in os.listdir(folderA):
         if filename.endswith(".png"):
