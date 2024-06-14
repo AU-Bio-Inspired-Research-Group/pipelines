@@ -54,6 +54,8 @@ This command generates graphs based on JSON data.
 ### Arguments
 - `method`: Method for graph generation.
 - `json`: Path to JSON file containing data for graph generation.
+- `bottomcoverage`: The bottom percentage removed (i.e. don't plot the bottom 20% of the data)
+- `topcoverage`: The top percentage removed
 
 ## Filter Command
 Command: `filter`
