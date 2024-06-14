@@ -71,6 +71,20 @@ def graph(method, json, bottomcoverage, topcoverage):
     updated_colourmap(method, "results.json", bottomcoverage, topcoverage)
     analyze_results("results.json", method)
 
+def find_ratio_pairs(num1, num2):
+    # Calculate the original ratio
+    if num2 == 0:
+        print("The second number cannot be zero.")
+        return
+    
+    original_ratio = num1 / num2
+
+    # Iterate over possible pairs
+    for i in range(1, num1):
+        for j in range(1, num2):
+            if i / j == original_ratio:
+                print(f"({i}, {j})")
+
 def iterateThroughImages(folderA, folderB, method, **kwargs):
     # Define comparison techniques
     comparison_techniques = {
@@ -180,6 +194,10 @@ if __name__ == "__main__":
     pipeline2_parser.add_argument("outputA")
     pipeline2_parser.add_argument("outputB")
 
+    ratio_parser = subparsers.add_parser("ratio", help="Graph")
+    ratio_parser.add_argument("num1", type=int)
+    ratio_parser.add_argument("num2", type=int)
+
     graph_parser = subparsers.add_parser("graph", help="Graph")
     graph_parser.add_argument("method", help="json file")
     graph_parser.add_argument("json", help="json file")
@@ -216,4 +234,6 @@ if __name__ == "__main__":
                 print("Please provide both x_dim and y_dim.")
     elif args.pipeline == "filter":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
+    elif args.pipeline == "ratio":
+        find_ratio_pairs(args.num1, args.num2)
 
