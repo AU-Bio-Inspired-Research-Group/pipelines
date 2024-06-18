@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
-
+import numpy as np
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -110,4 +110,50 @@ def updated_colourmap(method, results_file, bottomCoverage=0, topCoverage=0):
     plt.title(f'{metric_column}')
     plt.axis('off')  # Remove x and y axes
     plt.colorbar(label=metric_column)
+    plt.show()
+
+def plot_binary_comparison(json_file1, json_file2, method):
+    # Load JSON data from both files
+    with open(json_file1, 'r') as f:
+        data1 = json.load(f)
+    
+    with open(json_file2, 'r') as f:
+        data2 = json.load(f)
+    
+    # Read door positions data from CSV
+    door_positions_data = pd.read_csv("doorA_positions.csv")
+    
+    # Extract image names from JSON files (assuming they are identical in both files)
+    image_names = list(data1.keys())  # Using data1 keys assuming they are the same for both
+    
+    # Initialize a numpy array to store binary comparison results
+    comparison_result = np.zeros(len(image_names), dtype=int)
+    
+    # Perform comparison and print results for each image
+    for i, img in enumerate(image_names):
+        corr_value_file1 = data1[img]["Correlation"]
+        corr_value_file2 = data2[img]["Correlation"]
+        
+        # Determine which file has the larger correlation value
+        if corr_value_file1 > corr_value_file2:
+            comparison_result[i] = 1  # File 1 has larger correlation value
+            larger_file = json_file1
+        else:
+            comparison_result[i] = 0  # File 2 has larger or equal correlation value
+            larger_file = json_file2
+        
+        # Print filename and correlation values
+        print(f"Image: {img}")
+        print(f"  {json_file1}: Correlation = {corr_value_file1}")
+        print(f"  {json_file2}: Correlation = {corr_value_file2}")
+        print(f"  Larger file: {larger_file}")
+    
+    # Plotting the binary comparison result using x, y positions from CSV
+    plt.figure(figsize=(8, 6))
+    cmap = plt.get_cmap('viridis')  # Choose a perceptually uniform colormap
+    plt.scatter(door_positions_data["x"], door_positions_data["y"], c=comparison_result, cmap=cmap)
+    plt.title(f'Binary Comparison Result for Correlation')
+    plt.xlabel('X Position')
+    plt.ylabel('Y Position')
+    plt.colorbar(label='Comparison Result (1: File 1 > File 2, 0: File 2 >= File 1)')
     plt.show()

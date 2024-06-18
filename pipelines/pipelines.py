@@ -173,6 +173,9 @@ def check_image_dimensions(folder, x_dim, y_dim):
     # Check if dimensions match
     return image.shape[1] == x_dim and image.shape[0] == y_dim
 
+def binaryCompare(json1, json2, method):
+    plot_binary_comparison(json1, json2, method)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Command Line Interface for Pipelines")
     subparsers = parser.add_subparsers(dest="pipeline")
@@ -222,6 +225,11 @@ if __name__ == "__main__":
     average_parser.add_argument("outputFile", type=str, help="Base name for the output averaged image files")
     average_parser.add_argument("--window_size", type=int, default=200, help="Number of images to average in each window (default: 200)")
 
+    binary_parser = subparsers.add_parser("binary",)
+    binary_parser.add_argument("json1", type=str)
+    binary_parser.add_argument("json2", type=str)
+    binary_parser.add_argument("method", type=str)
+
 
     args = parser.parse_args()
 
@@ -247,6 +255,8 @@ if __name__ == "__main__":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "ratio":
         find_ratio_pairs(args.num1, args.num2)
-    if args.pipeline == "average":
+    elif args.pipeline == "average":
         average(args.inputFolder, args.outputFile, args.window_size)
+    elif args.pipeline == "binary":
+        binaryCompare(args.json1, args.json2, args.method)
 

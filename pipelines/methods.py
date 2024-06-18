@@ -67,3 +67,6 @@ def color_histogram_comparison(imageA, imageB):
     cv2.normalize(histA, histA)
     cv2.normalize(histB, histB)
     return float(cv2.compareHist(histA, histB, cv2.HISTCMP_CORREL))  # Ensure Color Histogram Comparison is converted to float
+
+def correlation(imageA, imageB):
+    return float(cv2.matchTemplate(imageA, imageB, cv2.TM_CCORR_NORMED)[0][0]) 
