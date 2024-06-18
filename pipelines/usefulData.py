@@ -72,3 +72,40 @@ def average_images(directory, output_filename):
     out = Image.fromarray(arr, mode="RGB")
     out.save(output_filename)
     out.show()
+
+def average_folder(directory, window_size, output_directory):
+    # Ensure the output directory exists
+    os.makedirs(output_directory, exist_ok=True)
+    
+    # Access all PNG files in the specified directory and sort them numerically
+    allfiles = sorted([filename for filename in os.listdir(directory) if filename.lower().endswith(".png")], key=lambda x: int(os.path.splitext(x)[0]))
+    
+    # Check if there are enough images to perform the operation
+    if len(allfiles) < window_size:
+        print("Not enough images in the directory to perform the operation.")
+        return
+
+    # Process images with a sliding window
+    for start_index in range(len(allfiles) - window_size + 1):
+        # Get the current window of image filenames
+        imlist = allfiles[start_index:start_index + window_size]
+
+        # Assuming all images are the same size, get dimensions of the first image
+        w, h = Image.open(os.path.join(directory, imlist[0])).size
+
+        # Create a numpy array of floats to store the average (assume RGB images)
+        arr = np.zeros((h, w, 3), float)
+
+        # Build up average pixel intensities, casting each image as an array of floats
+        for im in imlist:
+            imarr = np.array(Image.open(os.path.join(directory, im)), dtype=float)
+            arr += imarr / window_size
+
+        # Round values in array and cast as 8-bit integer
+        arr = np.array(np.round(arr), dtype=np.uint8)
+
+        # Generate, save, and preview final image
+        out = Image.fromarray(arr, mode="RGB")
+        output_filename = os.path.join(output_directory, f"average_{start_index + 1}_{start_index + window_size}.png")
+        out.save(output_filename)
+        print(f"Saved averaged image: {output_filename}")

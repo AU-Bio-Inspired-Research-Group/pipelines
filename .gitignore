@@ -369,8 +369,6 @@ FodyWeavers.xsd
 /pipelines/resizedA
 /pipelines/graph.py
 /pipelines/resizedB
-/pipelines/doorA
-/pipelines/doorB
 /pipelines/methods.py
 /pipelines/doorAtest
 /pipelines/doorBtest

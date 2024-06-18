@@ -71,8 +71,11 @@ def graph(method, json, bottomcoverage, topcoverage):
     updated_colourmap(method, "results.json", bottomcoverage, topcoverage)
     analyze_results("results.json", method)
 
-def average(inputFolder, outputFile):
-    average_images(inputFolder, outputFile)
+def average(inputFolder, outputFile, windowSize=0):
+    if windowSize == 0:
+        average_images(inputFolder, outputFile)
+    else:
+        average_folder(inputFolder, 200, outputFile)
 
 def find_ratio_pairs(num1, num2):
     # Calculate the original ratio
@@ -214,9 +217,10 @@ if __name__ == "__main__":
     filter_parser.add_argument("output_folderA", help="Output folder A")
     filter_parser.add_argument("output_folderB", help="Output folder B")
 
-    average_parser = subparsers.add_parser("average", help="Average")
-    average_parser.add_argument("inputFolder")
-    average_parser.add_argument("outputFile")
+    average_parser = subparsers.add_parser("average", help="Average images in a directory with a sliding window")
+    average_parser.add_argument("inputFolder", type=str, help="Path to the input folder containing images")
+    average_parser.add_argument("outputFile", type=str, help="Base name for the output averaged image files")
+    average_parser.add_argument("--window_size", type=int, default=200, help="Number of images to average in each window (default: 200)")
 
 
     args = parser.parse_args()
@@ -243,6 +247,6 @@ if __name__ == "__main__":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "ratio":
         find_ratio_pairs(args.num1, args.num2)
-    elif args.pipeline == "average":
-       average(args.inputFolder, args.outputFile)
+    if args.pipeline == "average":
+        average(args.inputFolder, args.outputFile, args.window_size)
 
