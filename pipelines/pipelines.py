@@ -18,8 +18,8 @@ def pipeline_1(method, folderA, folderB, **kwargs):
         skimageMethods(method, folderA, folderB, **kwargs)
         analyze_results("skimage_results.json", method)
     else:
-        iterateThroughImages(folderA, folderB, method, **kwargs)
-        updated_colourmap(method, "results.json")
+        iterateThroughImagePairs(folderA, method, **kwargs)
+        #updated_colourmap(method, "results.json")
         analyze_results("results.json", method)
 
 def pipeline_2(filename, folderA, folderB, outputA, outputB):
@@ -39,7 +39,10 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
     filters = {
         "greyscale": greyscale,
         "colour": replaceColour,
-        "flip": flip_horizontal
+        "flip": flip_horizontal,
+        "uniform": uniform_sub_sampling,
+        "block": block_based_sub_sampling,
+        "nonuniform": non_uniform_sub_sampling
         # Add other filters here as needed
     }
 
@@ -151,6 +154,68 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
 
     print("Results saved to results.json")
 
+
+def iterateThroughImagePairs(folder, method, **kwargs):
+    # Define comparison techniques
+    comparison_techniques = {
+        "PSNR": psnr,
+        "MAE": mae,
+        "NCC": ncc,
+        "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
+        "Histogram": histogram_intersection,
+        "EMD": emd,
+        "Absolute": abs_diff,
+        "Correlation": correlation,
+        "Bhattacharyya": bhattacharyya
+    }
+
+    results = {}
+
+    # Load existing results if available
+    results_file = "results.json"
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
+            results = json.load(f)
+        
+        # Check if any image pair has data for the specified method
+        if any(method in image_results for image_results in results.values()):
+            user_input = input(f"Results for method '{method}' already exist. Do you want to continue processing? (yes/no): ").strip().lower()
+            if user_input != 'yes':
+                print("Skipping processing.")
+                return
+
+    # Get all image filenames
+    image_files = [f for f in os.listdir(folder) if f.endswith(".png") or f.endswith(".jpg")]
+
+    # Iterate through all unique pairs of images
+    for file1, file2 in combinations(image_files, 2):
+        print(f"Comparing {file1} and {file2}")
+
+        imageA = cv2.imread(os.path.join(folder, file1))
+        imageB = cv2.imread(os.path.join(folder, file2))
+        if imageA is None or imageB is None:
+            continue
+
+        function = comparison_techniques[method]
+        try:
+            result = function(imageA, imageB)
+        except Exception as e:
+            result = str(e)
+
+        # Ensure the filename entry exists in results
+        pair_key = f"{file1} vs {file2}"
+        if pair_key not in results:
+            results[pair_key] = {}
+
+        # Update the method result for this image pair
+        results[pair_key][method] = result
+
+    # Save updated results
+    with open(results_file, "w") as f:
+        json.dump(results, f)
+
+    print("Results saved to results.json")
+
 def check_image_dimensions(folder, x_dim, y_dim):
     # Check if folder exists
     if not os.path.exists(folder):
@@ -215,7 +280,7 @@ if __name__ == "__main__":
     graph_parser.add_argument("topcoverage", help="coverage", type=int)
 
     filter_parser = subparsers.add_parser("filter", help="Filter")
-    filter_parser.add_argument("filter", choices=["greyscale", "colour", "flip"], help="Filter")
+    filter_parser.add_argument("filter", choices=["greyscale", "colour", "flip", "uniform", "nonuniform", "block"], help="Filter")
     filter_parser.add_argument("input_folderA", help="Input folder A")
     filter_parser.add_argument("input_folderB", help="Input folder B")
     filter_parser.add_argument("output_folderA", help="Output folder A")

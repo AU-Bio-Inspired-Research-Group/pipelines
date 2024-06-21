@@ -2,6 +2,8 @@ import cv2
 import os
 from PIL import Image
 import json
+import random
+import numpy as np
 
 def block_average_png_to_json(input_folder, output_folder, hs, ws):
     # Create the output folder if it doesn't exist
@@ -100,3 +102,61 @@ def flip_horizontal(inputFile, outputFile):
     except Exception as e:
         print(f"Error processing {inputFile}: {str(e)}")
 
+def non_uniform_sub_sampling(image_path, outputfile, sample_fraction=6):
+    image = Image.open(image_path)
+    pixels = image.load()
+
+    width, height = image.size
+    num_samples = int(width * height * sample_fraction)
+
+    new_image = Image.new("RGB", (width, height))
+    new_image.paste((255, 255, 255), [0, 0, new_image.size[0], new_image.size[1]])  # White background
+    new_pixels = new_image.load()
+
+    sampled_indices = random.sample([(i, j) for i in range(width) for j in range(height)], num_samples)
+
+    for (i, j) in sampled_indices:
+        new_pixels[i, j] = pixels[i, j]
+
+    new_image.save(outputfile)
+
+def block_based_sub_sampling(image_path, outputfile, block_size=6):
+    image = Image.open(image_path)
+    pixels = image.load()
+
+    width, height = image.size
+    new_width = width // block_size
+    new_height = height // block_size
+
+    new_image = Image.new("RGB", (new_width, new_height))
+    new_pixels = new_image.load()
+
+    for i in range(new_width):
+        for j in range(new_height):
+            block = [
+                pixels[i * block_size + m, j * block_size + n]
+                for m in range(block_size)
+                for n in range(block_size)
+                if (i * block_size + m < width and j * block_size + n < height)
+            ]
+            avg_color = tuple(np.mean(block, axis=0).astype(int))
+            new_pixels[i, j] = avg_color
+
+    new_image.save(outputfile)
+
+def uniform_sub_sampling(image_path, outputfile, step=6):
+    image = Image.open(image_path)
+    pixels = image.load()
+
+    width, height = image.size
+    new_width = width // step
+    new_height = height // step
+
+    new_image = Image.new("RGB", (new_width, new_height))
+    new_pixels = new_image.load()
+
+    for i in range(new_width):
+        for j in range(new_height):
+            new_pixels[i, j] = pixels[i * step, j * step]
+
+    new_image.save(outputfile)
