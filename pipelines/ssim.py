@@ -34,7 +34,7 @@ def calculate_rmse(img1_path, img2_path):
 def process_images(method, directory1, directory2, gaussian_weights=True, sigma=1.5):
     score_dict = {}
     for filename in os.listdir(directory1):
-        if filename.endswith(".png"):
+        if filename.endswith(".png") or filename.endswith(".jpg"):
             img1_path = os.path.join(directory1, filename)
             print(img1_path)
             img2_path = os.path.join(directory2, filename)

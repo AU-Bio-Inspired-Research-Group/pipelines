@@ -16,6 +16,7 @@ def pipeline_1(method, folderA, folderB, **kwargs):
     # Different because don't use openCV
     if method == "SSIM" or method == "RMSE":
         skimageMethods(method, folderA, folderB, **kwargs)
+        analyze_results("skimage_results.json", method)
     else:
         iterateThroughImages(folderA, folderB, method, **kwargs)
         updated_colourmap(method, "results.json")
@@ -123,7 +124,7 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
         print("Error loading existing results. Starting fresh.")
 
     for filename in os.listdir(folderA):
-        if filename.endswith(".png"):
+        if filename.endswith(".png") or filename.endswith(".jpg"):
             print(filename)
 
             imageA = cv2.imread(os.path.join(folderA, filename))
