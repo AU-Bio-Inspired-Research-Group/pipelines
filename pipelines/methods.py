@@ -68,5 +68,26 @@ def color_histogram_comparison(imageA, imageB):
     cv2.normalize(histB, histB)
     return float(cv2.compareHist(histA, histB, cv2.HISTCMP_CORREL))  # Ensure Color Histogram Comparison is converted to float
 
+def center_weighted_image_diff(image1, image2):
+    # Ensure images are the same size
+    if image1.shape != image2.shape:
+        raise ValueError("Images must have the same dimensions")
+    
+    height, width = image1.shape[:2]
+    center_x, center_y = width // 2, height // 2
+    
+    # Calculate distance weights based on distance from center
+    y, x = np.mgrid[0:height, 0:width]
+    weights = np.exp(-((x - center_x)**2 + (y - center_y)**2) / (2 * (width / 6)**2))
+    
+    # Compute squared difference weighted by distance from center
+    diff = (image1.astype(float) - image2.astype(float)) ** 2
+    weighted_diff = diff * weights[:,:,np.newaxis]  # Expand weights to match channels
+    
+    # Sum of squared differences, weighted by distance from center
+    weighted_score = np.sum(weighted_diff) / np.sum(weights)
+
+    return weighted_score
+
 def correlation(imageA, imageB):
     return float(cv2.matchTemplate(imageA, imageB, cv2.TM_CCORR_NORMED)[0][0]) 

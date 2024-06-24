@@ -11,6 +11,8 @@ from filters import *
 from crop import *
 from ssim import skimageMethods
 from usefulData import *
+from itertools import combinations
+
 
 def pipeline_1(method, folderA, folderB, **kwargs):
     # Different because don't use openCV
@@ -18,7 +20,7 @@ def pipeline_1(method, folderA, folderB, **kwargs):
         skimageMethods(method, folderA, folderB, **kwargs)
         analyze_results("skimage_results.json", method)
     else:
-        iterateThroughImagePairs(folderA, method, **kwargs)
+        iterateThroughImages(folderA, folderB, method, **kwargs)
         #updated_colourmap(method, "results.json")
         analyze_results("results.json", method)
 
@@ -35,7 +37,7 @@ def resize(x_dim, y_dim, folderA, folderB):
         else:
             print("Resized images with matching dimensions already exist.")
 
-def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
+def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB, **kwargs):
     filters = {
         "greyscale": greyscale,
         "colour": replaceColour,
@@ -65,8 +67,12 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
                 output_path = os.path.join(output_folder, filename)
 
                 try:
-                    # Apply the filter
-                    filter_function(input_path, output_path)
+                    # Apply the filter with optional parameters
+                    if kwargs:
+                        filter_function(input_path, output_path, **kwargs)
+                    else:
+                        filter_function(input_path, output_path)
+                        
                     print(f"Processed and saved: {output_path}")
                 except Exception as e:
                     print(f"Error processing {input_path}: {str(e)}")
@@ -105,7 +111,8 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
         "EMD": emd,
         "Absolute": abs_diff,
         "Correlation": correlation,
-        "Bhattacharyya": bhattacharyya
+        "Bhattacharyya": bhattacharyya,
+        "Weighted": center_weighted_image_diff
     }
 
     results = {}
@@ -166,7 +173,8 @@ def iterateThroughImagePairs(folder, method, **kwargs):
         "EMD": emd,
         "Absolute": abs_diff,
         "Correlation": correlation,
-        "Bhattacharyya": bhattacharyya
+        "Bhattacharyya": bhattacharyya,
+        "Weighted": center_weighted_image_diff
     }
 
     results = {}
@@ -248,7 +256,7 @@ if __name__ == "__main__":
 
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
-    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "RMSE", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya"], help="Method")
+    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "RMSE", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya", "Weighted"], help="Method")
     pipeline1_parser.add_argument("folderA")
     pipeline1_parser.add_argument("folderB")
 
