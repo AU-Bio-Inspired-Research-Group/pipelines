@@ -13,6 +13,18 @@ from ssim import skimageMethods
 from usefulData import *
 from itertools import combinations
 
+comparison_techniques = {
+        "PSNR": psnr,
+        "MAE": mae,
+        "NCC": ncc,
+        "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
+        "Histogram": histogram_intersection,
+        "EMD": emd,
+        "Absolute": abs_diff,
+        "Correlation": correlation,
+        "Bhattacharyya": bhattacharyya,
+        "Weighted": center_weighted_image_diff
+    }
 
 def pipeline_1(method, folderA, folderB, **kwargs):
     # Different because don't use openCV
@@ -102,18 +114,6 @@ def find_ratio_pairs(num1, num2):
                 print(f"({i}, {j})")
 
 def iterateThroughImages(folderA, folderB, method, **kwargs):
-    # Define comparison techniques
-    comparison_techniques = {
-        "PSNR": psnr,
-        "MAE": mae,
-        "NCC": ncc,
-        "Histogram": histogram_intersection,
-        "EMD": emd,
-        "Absolute": abs_diff,
-        "Correlation": correlation,
-        "Bhattacharyya": bhattacharyya,
-        "Weighted": center_weighted_image_diff
-    }
 
     results = {}
 
@@ -164,18 +164,6 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
 
 def iterateThroughImagePairs(folder, method, **kwargs):
     # Define comparison techniques
-    comparison_techniques = {
-        "PSNR": psnr,
-        "MAE": mae,
-        "NCC": ncc,
-        "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
-        "Histogram": histogram_intersection,
-        "EMD": emd,
-        "Absolute": abs_diff,
-        "Correlation": correlation,
-        "Bhattacharyya": bhattacharyya,
-        "Weighted": center_weighted_image_diff
-    }
 
     results = {}
 
