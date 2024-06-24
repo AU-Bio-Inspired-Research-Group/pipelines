@@ -33,7 +33,7 @@ def pipeline_1(method, folderA, folderB, **kwargs):
         analyze_results("skimage_results.json", method)
     else:
         iterateThroughImages(folderA, folderB, method, **kwargs)
-        #updated_colourmap(method, "results.json")
+        updated_colourmap(method, "results.json")
         analyze_results("results.json", method)
 
 def pipeline_2(filename, folderA, folderB, outputA, outputB):
